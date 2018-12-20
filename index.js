@@ -1,3 +1,4 @@
+const debug = require('debug')('app:startup');
 const config = require('config'); //allows for config files based on different environments dev/production
 const Joi = require('joi');
 const helmet = require('helmet');
@@ -12,9 +13,12 @@ app.use(helmet()); //Help secure Express apps with various HTTP headers
 app.use(logger); //custom middleware in logger.js
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); //console logs api requests with express (can write to log file)
-  console.log('Morgan enabled...');
+  debug('Morgan enabled...');
 }
 
+
+//db work....
+debug('Connected to the database....');
 
 //Configuration
 console.log('Application Name: ' + config.get('name'));
