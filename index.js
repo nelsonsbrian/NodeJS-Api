@@ -7,6 +7,7 @@ const express = require('express');
 const app = express();
 const logger = require('./middleware/logger');
 const courses = require('./routes/courses');
+const genres = require('/routes/genres');
 const home = require('./routes/home');
 app.set('view engine', 'pug');
 app.set('views', './views'); //default - optional setting
@@ -17,6 +18,7 @@ app.use(express.static('public')); //middleware for static folders - serve stati
 app.use(helmet()); //Help secure Express apps with various HTTP headers 
 app.use(logger); //custom middleware in logger.js
 app.use('/api/courses', courses);
+app.use('/api/genres', genres);
 app.use('/', home);
 if (app.get('env') === 'development') {
   app.use(morgan('tiny')); //console logs api requests with express (can write to log file)
