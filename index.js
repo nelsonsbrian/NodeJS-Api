@@ -1,9 +1,29 @@
+const config = require('config'); //allows for config files based on different environments dev/production
 const Joi = require('joi');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const express = require('express');
 const app = express();
 const logger = require('./logger');
-app.use(express.json());
-app.use(logger);
+app.use(express.json()); //parses req.body into JSON data
+app.use(express.urlencoded({ extended: true })); //key=value&ke=value req.body into JSON data
+app.use(express.static('public')); //middleware for static folders - serve static content to from root parameter to extact url. localhost:3000/readme.txt
+app.use(helmet()); //Help secure Express apps with various HTTP headers 
+app.use(logger); //custom middleware in logger.js
+if (app.get('env') === 'development') {
+  app.use(morgan('tiny')); //console logs api requests with express (can write to log file)
+  console.log('Morgan enabled...');
+}
+
+
+//Configuration
+console.log('Application Name: ' + config.get('name'));
+console.log('Mail Server:' + config.get('mail.host'));
+// console.log('Mail Password:' + config.get('mail.password'));
+
+
+console.log(`node env: ${process.env.NODE_ENV}`);
+console.log(`app: ${app.get('env')}`)
 
 const courses = [
   { id: 1, name: 'course1' },
@@ -54,7 +74,7 @@ app.delete('/api/courses/:id', (req, res) => {
   if (!course) return res.status(404).send('The course with the given ID was not found.');
 
   const index = courses.indexOf(course);
-  courses.splice(index,1);
+  courses.splice(index, 1);
 
   res.send(course);
 
